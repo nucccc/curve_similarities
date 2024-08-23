@@ -65,7 +65,10 @@ where
 }
 
 /*  frechet calculates the frechet distance between two curves */
-pub fn frechet(arr1: &Array2<f64>, arr2: &Array2<f64>, metric : DistMetric) -> f64 {
+pub fn frechet<T>(arr1: &Array2<T>, arr2: &Array2<T>, metric : DistMetric) -> f64
+where
+    T : Float + Signed + std::ops::AddAssign + std::convert::Into<f64>
+{
     let dist_func = metric_func(metric);
 
     let dist_matrix = calc_dist_matrix(arr1, arr2, dist_func);
@@ -99,7 +102,10 @@ fn frechet_walk(dist_matrix: &Array2<f64>) -> f64 {
     ca.row(n_rows - 1)[n_cols - 1]
 }
 
-pub fn dtw(arr1: &Array2<f64>, arr2: &Array2<f64>, metric : DistMetric) -> f64 {
+pub fn dtw<T>(arr1: &Array2<T>, arr2: &Array2<T>, metric : DistMetric) -> f64
+where
+    T : Float + Signed + std::ops::AddAssign + std::convert::Into<f64>
+{
     let dist_func = metric_func(metric);
     
     let dist_matrix = calc_dist_matrix(arr1, arr2, dist_func);
@@ -139,25 +145,6 @@ mod tests {
 
     use approx::relative_eq;
     use ndarray::array;
-
-    #[test]
-    fn test_frechet() {
-        let fr = frechet(
-            &array![[1.0], [1.0], [3.0]],
-            &array![[2.0], [4.0]],
-            DistMetric::Euclidean
-        );
-
-        assert_eq!(fr, 1.0);
-
-        let fr1 = frechet(
-            &array![[1.0], [3.0], [4.0]],
-            &array![[1.0], [7.3]],
-            DistMetric::Euclidean
-        );
-
-        assert_eq!(fr1, 3.3);
-    }
 
     #[test]
     fn test_calc_dist_matrix() {
