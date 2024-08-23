@@ -4,6 +4,24 @@ use ndarray::{Array2, ArrayView, Ix1};
 use num::{Float, Signed};
 use ndarray_stats::DeviationExt;
 
+pub enum DistMetric {
+    Euclidean,
+    Manhattan
+}
+
+fn metric_func<T>(metric : DistMetric) -> fn(
+    row1 : &ArrayView<T, Ix1>,
+    row2 : &ArrayView<T, Ix1>
+) -> f64
+where
+T : Float + Signed + std::ops::AddAssign + std::convert::Into<f64>
+{
+    match metric {
+        DistMetric::Euclidean => euclidean_dist,
+        DistMetric::Manhattan => manhattan_dist
+    }
+}
+
 pub fn euclidean_dist<T>(
     row1 : &ArrayView<T, Ix1>,
     row2 : &ArrayView<T, Ix1>
@@ -14,7 +32,7 @@ T : Float + Signed + std::ops::AddAssign + std::convert::Into<f64>// + RawData
     row1.l2_dist(row2).unwrap()
 }
 
-pub fn minkowski_dist<T>(
+pub fn manhattan_dist<T>(
     row1 : &ArrayView<T, Ix1>,
     row2 : &ArrayView<T, Ix1>
 ) -> f64
@@ -47,9 +65,11 @@ where
 }
 
 /*  frechet calculates the frechet distance between two curves */
-pub fn frechet(arr1: &Array2<f64>, arr2: &Array2<f64>) -> f64 {
-    let dist_matrix = calc_dist_matrix(arr1, arr2, euclidean_dist);
+pub fn frechet(arr1: &Array2<f64>, arr2: &Array2<f64>, metric : DistMetric) -> f64 {
+    let dist_func = metric_func(metric);
 
+    let dist_matrix = calc_dist_matrix(arr1, arr2, dist_func);
+    
     frechet_walk(&dist_matrix)
 }
 
@@ -79,8 +99,10 @@ fn frechet_walk(dist_matrix: &Array2<f64>) -> f64 {
     ca.row(n_rows - 1)[n_cols - 1]
 }
 
-pub fn dtw(arr1: &Array2<f64>, arr2: &Array2<f64>) -> f64 {
-    let dist_matrix = calc_dist_matrix(arr1, arr2, euclidean_dist);
+pub fn dtw(arr1: &Array2<f64>, arr2: &Array2<f64>, metric : DistMetric) -> f64 {
+    let dist_func = metric_func(metric);
+    
+    let dist_matrix = calc_dist_matrix(arr1, arr2, dist_func);
 
     dtw_walk(&dist_matrix)
 }
@@ -122,14 +144,16 @@ mod tests {
     fn test_frechet() {
         let fr = frechet(
             &array![[1.0], [1.0], [3.0]],
-            &array![[2.0], [4.0]]
+            &array![[2.0], [4.0]],
+            DistMetric::Euclidean
         );
 
         assert_eq!(fr, 1.0);
 
         let fr1 = frechet(
             &array![[1.0], [3.0], [4.0]],
-            &array![[1.0], [7.3]]
+            &array![[1.0], [7.3]],
+            DistMetric::Euclidean
         );
 
         assert_eq!(fr1, 3.3);
