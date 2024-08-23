@@ -1,0 +1,22 @@
+[package]
+name = "curve_similarities"
+authors = ["nucccc <dan.dom.nuc@gmail.com>"]
+version = "0.1.0"
+edition = "2021"
+
+license = "MIT"
+
+readme = "README.md"
+
+description = "Calculation of curve similarities for 2-dimensional arrays"
+
+keywords = ["mathematics", "science", "numerical", "curve", "calculations"]
+categories = ["mathematics", "science"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+approx = "0.3.2"
+ndarray = "0.15.0"
+ndarray-stats = "0.5.1"
+num = "0.4.3"
