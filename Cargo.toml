@@ -18,5 +18,6 @@ categories = ["mathematics", "science"]
 [dependencies]
 approx = "0.3.2"
 ndarray = "0.15.0"
+ndarray-interp = "0.4.1"
 ndarray-stats = "0.5.1"
 num = "0.4.3"
