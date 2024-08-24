@@ -6,7 +6,7 @@ edition = "2021"
 
 license = "MIT"
 
-readme = "README.md"
+readme = "readme.md"
 
 description = "Calculation of curve similarities for 2-dimensional arrays"
 
