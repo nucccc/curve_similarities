@@ -4,6 +4,10 @@ use num::{Float, Signed, FromPrimitive, One};
 use ndarray_stats::{DeviationExt, QuantileExt};
 use ndarray_interp::interp1d::{Interp1D, Linear};
 
+fn error_dims_str(dim1 : usize, dim2 : usize) -> String {
+    format!("Different number of dimensions, array 1 got {} columns, array 2 got {} columns", dim1, dim2)
+}
+
 pub enum DistMetric {
     Euclidean,
     Manhattan
@@ -65,15 +69,21 @@ where
 }
 
 /*  frechet calculates the frechet distance between two curves */
-pub fn frechet<T>(arr1: &Array2<T>, arr2: &Array2<T>, metric : DistMetric) -> f64
+pub fn frechet<T>(arr1: &Array2<T>, arr2: &Array2<T>, metric : DistMetric) -> Result<f64, String>
 where
     T : Float + Signed + std::ops::AddAssign + std::convert::Into<f64>
 {
+    let dim1 = arr1.dim().1;
+    let dim2 = arr2.dim().1;
+    if dim1 != dim2 {
+        return Err(error_dims_str(arr1.dim().1, arr2.dim().1));
+    }
+
     let dist_func = metric_func(metric);
 
     let dist_matrix = calc_dist_matrix(arr1, arr2, dist_func);
     
-    frechet_walk(&dist_matrix)
+    Ok(frechet_walk(&dist_matrix))
 }
 
 fn frechet_walk(dist_matrix: &Array2<f64>) -> f64 {
@@ -102,15 +112,21 @@ fn frechet_walk(dist_matrix: &Array2<f64>) -> f64 {
     ca.row(n_rows - 1)[n_cols - 1]
 }
 
-pub fn dtw<T>(arr1: &Array2<T>, arr2: &Array2<T>, metric : DistMetric) -> f64
+pub fn dtw<T>(arr1: &Array2<T>, arr2: &Array2<T>, metric : DistMetric) -> Result<f64, String>
 where
     T : Float + Signed + std::ops::AddAssign + std::convert::Into<f64>
 {
+    let dim1 = arr1.dim().1;
+    let dim2 = arr2.dim().1;
+    if dim1 != dim2 {
+        return Err(error_dims_str(arr1.dim().1, arr2.dim().1));
+    }
+
     let dist_func = metric_func(metric);
     
     let dist_matrix = calc_dist_matrix(arr1, arr2, dist_func);
 
-    dtw_walk(&dist_matrix)
+    Ok(dtw_walk(&dist_matrix))
 }
 
 fn dtw_walk(dist_matrix: &Array2<f64>) -> f64 {

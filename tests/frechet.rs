@@ -8,7 +8,7 @@ fn test_frechet_euclidean() {
         &array![[1.0], [1.0], [3.0]],
         &array![[2.0], [4.0]],
         DistMetric::Euclidean
-    );
+    ).unwrap();
 
     assert_eq!(fr, 1.0);
 
@@ -16,7 +16,7 @@ fn test_frechet_euclidean() {
         &array![[1.0], [3.0], [4.0]],
         &array![[1.0], [7.3]],
         DistMetric::Euclidean
-    );
+    ).unwrap();
 
     assert_eq!(fr1, 3.3);
 
@@ -24,7 +24,7 @@ fn test_frechet_euclidean() {
         &array![[1.0, 2.0], [1.0, 4.0], [3.0, 1.0]],
         &array![[2.0, 5.0], [4.0, 2.0]],
         DistMetric::Euclidean
-    );
+    ).unwrap();
 
     assert_eq!(fr2, 3.1622776601683795);
 }
@@ -35,7 +35,7 @@ fn test_frechet_euclidean_f32() {
         &array![[1.0_f32], [1.0], [3.0]],
         &array![[2.0], [4.0]],
         DistMetric::Euclidean
-    );
+    ).unwrap();
 
     assert_eq!(fr, 1.0);
 
@@ -43,7 +43,7 @@ fn test_frechet_euclidean_f32() {
         &array![[1.0_f32], [3.0], [4.0]],
         &array![[1.0], [7.3]],
         DistMetric::Euclidean
-    );
+    ).unwrap();
 
     assert_eq!(fr1, 3.3000001965147017);
 
@@ -51,7 +51,7 @@ fn test_frechet_euclidean_f32() {
         &array![[1.0_f32, 2.0], [1.0, 4.0], [3.0, 1.0]],
         &array![[2.0, 5.0], [4.0, 2.0]],
         DistMetric::Euclidean
-    );
+    ).unwrap();
 
     assert_eq!(fr2, 3.1622776601683795);
 }
@@ -62,7 +62,7 @@ fn test_frechet_manhattan() {
         &array![[1.0], [1.0], [3.0]],
         &array![[2.0], [4.0]],
         DistMetric::Manhattan
-    );
+    ).unwrap();
 
     assert_eq!(fr, 1.0);
 
@@ -70,7 +70,7 @@ fn test_frechet_manhattan() {
         &array![[1.0], [3.0], [4.0]],
         &array![[1.0], [7.3]],
         DistMetric::Manhattan
-    );
+    ).unwrap();
 
     assert_eq!(fr1, 3.3);
 
@@ -78,7 +78,18 @@ fn test_frechet_manhattan() {
         &array![[1.0, 2.0], [1.0, 4.0], [3.0, 1.0]],
         &array![[2.0, 5.0], [4.0, 2.0]],
         DistMetric::Manhattan
-    );
+    ).unwrap();
 
     assert_eq!(fr2, 4.0);
+}
+
+#[test]
+fn test_frechet_wrong_dims() {
+    let fr_err = frechet(
+        &array![[1.0], [3.0], [4.0]],
+        &array![[1.0, 2.0], [7.3, 3.7]],
+        DistMetric::Manhattan
+    );
+
+    assert!(fr_err.is_err());
 }
