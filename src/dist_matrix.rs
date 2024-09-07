@@ -7,7 +7,7 @@ pub enum DistMetric {
     Manhattan
 }
 
-fn euclidean_dist<T>(
+pub fn euclidean_dist<T>(
     row1 : &ArrayView<T, Ix1>,
     row2 : &ArrayView<T, Ix1>
 ) -> f64
