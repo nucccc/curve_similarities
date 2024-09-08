@@ -104,7 +104,7 @@ where
         xi += 1;
     }
 
-    println!("{:?}", new_x);
+    //println!("{:?}", new_x);
 
     let interpolator = Interp1D::builder(y)
         .x(x)
@@ -114,7 +114,7 @@ where
 
         let new_y = interpolator.interp_array(&new_x).unwrap();
 
-    stack(Axis(0), &[new_x.view(), new_y.view()]).unwrap()
+    stack(Axis(0), &[new_x.view(), new_y.view()]).unwrap().into_shape((desired_size, 2)).unwrap()
 }
 
 #[cfg(test)]
@@ -149,10 +149,21 @@ mod tests {
             [0.4, 0.5],
             [0.5, 0.2]
         ],
-        8
+        7
     );
 
-        println!("{:?}", c);
+        assert!(c == array![
+            [0.0, 0.1],
+            [0.2, 0.3],
+            [0.4, 0.45],
+            [0.5, 0.2],
+            [0.3, 0.2],
+            [0.4, 0.5],
+            [0.35, 0.2]
+        ]);
+
+        //println!("{:?}", c);
+        //println!("{}", c.dim().0);
 
         //assert!(false);
     }
