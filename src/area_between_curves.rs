@@ -76,7 +76,7 @@ where
 
     let mut divs_counter = vec![1; dist_arr.dim()];
 
-    for _ in arr.dim().0..desired_size {
+    for _ in arr.dim().0..(desired_size) {
         let to_div = dist_arr.argmax().unwrap();
         divs_counter[to_div] += 1;
         dist_arr[to_div] = dist_arr_original[to_div] / (divs_counter[to_div] as f64);
@@ -104,8 +104,6 @@ where
         xi += 1;
     }
 
-    //println!("{:?}", new_x);
-
     let interpolator = Interp1D::builder(y)
         .x(x)
         .strategy(Linear::new())
@@ -114,7 +112,7 @@ where
 
         let new_y = interpolator.interp_array(&new_x).unwrap();
 
-    stack(Axis(0), &[new_x.view(), new_y.view()]).unwrap().into_shape((desired_size, 2)).unwrap()
+    stack(Axis(1), &[new_x.view(), new_y.view()]).unwrap().into_shape((desired_size, 2)).unwrap()
 }
 
 #[cfg(test)]
@@ -134,9 +132,13 @@ mod tests {
             [0.5, 0.2]
         ]);
 
-        println!("{:?}", c);
-
-        //assert!(false);
+        assert!(c == array![
+            0.1414213562373095,
+            0.1414213562373095,
+            0.22360679774997896,
+            0.14142135623730953,
+            0.31622776601683794
+        ]);
     }
 
     #[test]
@@ -153,19 +155,14 @@ mod tests {
     );
 
         assert!(c == array![
-            [0.0, 0.1],
-            [0.2, 0.3],
-            [0.4, 0.45],
-            [0.5, 0.2],
-            [0.3, 0.2],
+            [0.0, 0.2],
+            [0.1, 0.3],
+            [0.2, 0.2],
+            [0.3, 0.4],
             [0.4, 0.5],
-            [0.35, 0.2]
+            [0.45, 0.35],
+            [0.5, 0.2],
         ]);
-
-        //println!("{:?}", c);
-        //println!("{}", c.dim().0);
-
-        //assert!(false);
     }
 
     #[test]
