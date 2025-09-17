@@ -1,9 +1,45 @@
-use ndarray::{Array1, Array2, s, Axis, stack};
+use std::ops::Mul;
+
+use ndarray::{array, s, stack, Array1, Array2, Axis};
 use ndarray_stats::QuantileExt;
-use num::{Float, Signed};
+use num::{traits::float, Float, FromPrimitive, Signed, Zero};
 use ndarray_interp::interp1d::{Interp1D, Linear};
 
 use crate::dist_matrix::euclidean_dist;
+
+fn area_between_two_curves<T>(
+    arr1: &Array2<T>,
+    arr2: &Array2<T>
+) -> T
+where
+T : Float + Signed + std::ops::AddAssign + std::convert::From<i32> + std::convert::Into<f64> + std::fmt::Debug + std::marker::Send
+{
+    let short = if arr1.len() < arr2.len() {arr1} else {arr2};
+    let long = if arr1.len() < arr2.len() {arr2} else {arr1};
+
+    let longed = enlarge(short, long.len());
+
+    let mut area: T = Zero::zero();
+
+    for i in 1..longed.len() {
+        let mut tx: Array1<T> = array![
+            longed.row(i-1)[0],
+            longed.row(i)[0],
+            long.row(i)[0],
+            long.row(i-1)[0],
+        ];
+        let mut ty: Array1<T> = array![
+            longed.row(i-1)[1],
+            longed.row(i)[1],
+            long.row(i)[1],
+            long.row(i-1)[1],
+        ];
+
+        area += make_quad(&mut tx, &mut ty);
+    }
+
+    area
+}
 
 fn cross_2d<T>(v0_0 : T, v0_1 : T, v1_0 : T, v1_1 : T) -> T
 where
@@ -45,6 +81,89 @@ T : Float
     let tf = if pos < neg {neg + zer} else {pos + zer};
 
     tf > 2    
+}
+
+
+fn roll_one<T>(input: &Array1<T>) -> Array1<T>
+where
+T : Float
+{
+    let mut res: Array1<T> = Array1::zeros(input.len());
+
+    res[0] = input[input.len()-1];
+
+    for i in 1..input.len() {
+        res[i] = input[i-1];
+    }
+
+    res
+}
+
+fn poly_area<T>(
+    x: &Array1<T>,
+    y: &Array1<T>,
+) -> T
+where 
+T : Float + Signed + FromPrimitive + 'static
+{
+    let yr: Array1<T> = roll_one(y);
+    let xr: Array1<T> = roll_one(x);
+    let half = T::from(0.5).unwrap();
+
+    let num = (x.dot(&yr) - y.dot(&xr)).abs();
+
+    half * num
+}
+
+
+fn make_quad<T>(
+    x: &mut Array1<T>,
+    y: &mut Array1<T>,
+) -> T
+where 
+T : Float
+{
+    let mut c: T;
+    if ! is_simple_quad(
+        x[1]-x[0],
+        y[1]-y[0],
+        x[2]-x[1],
+        y[2]-y[1],
+        x[3]-x[2],
+        y[3]-y[2],
+        x[0]-x[3],
+        y[0]-y[3]
+    ) {
+        c = x[0];
+        x[0] = x[1];
+        x[1] = c;
+        c = y[0];
+        y[0] = y[1];
+        y[1] = c;
+
+        if ! is_simple_quad(
+            x[1]-x[0],
+            y[1]-y[0],
+            x[2]-x[1],
+            y[2]-y[1],
+            x[3]-x[2],
+            y[3]-y[2],
+            x[0]-x[3],
+            y[0]-y[3]
+        ) {
+            c = x[2];
+            x[2] = x[0];
+            x[0] = x[1];
+            x[1] = x[2];
+
+            c = y[2];
+            y[2] = y[0];
+            y[0] = y[1];
+            y[1] = y[2];
+        }
+    }
+    
+    x[0]
 }
 
 pub fn arc_len<T>(arr : &Array2<T>) -> Array1<f64>
