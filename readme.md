@@ -2,13 +2,17 @@
 
 Implementation of calculations for curves similarities as in python package [similarity_measures](https://github.com/cjekel/similarity_measures).
 
-At the moment has implementations for Frechet and DTW distances, allowing for both Euclidean and Manhattan pointwise distances.
+The following distances are currently implemented:
+- Dynamic Time Warping, from Senin, P., 2008. Dynamic time warping algorithm review. Information and Computer Science Department University of Hawaii at Manoa Honolulu, USA, 855, pp.1-23 [PDF](http://seninp.github.io/assets/pubs/senin_dtw_litreview_2008.pdf)
+- Frechet distance, from Thomas Eiter and Heikki Mannila, Computing discrete Frechet distance. Technical report, 1994. [PDF](http://www.kr.tuwien.ac.at/staff/eiter/et-archive/cdtr9464.pdf) [PDF](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.90.937&rep=rep1&type=pdf)
+- Curve length measure, from A Andrade-Campos, R De-Carvalho, and R A F Valente. Novel criteria for determination of material model parameters. International Journal of Mechanical Sciences, 54(1):294-305, 2012. ISSN 0020-7403. [DOI](https://doi.org/10.1016/j.ijmecsci.2011.11.010) [URL](http://www.sciencedirect.com/science/article/pii/S0020740311002451)
+- Area between two curves, from Jekel, C. F., Venter, G., Venter, M. P., Stander, N., & Haftka, R. T. (2018). Similarity measures for identifying material parameters from hysteresis loops using inverse analysis. International Journal of Material Forming. [DOI](https://doi.org/10.1007/s12289-018-1421-8)
 
 The library requires in input a bidimensional array of the [ndarray](https://github.com/rust-ndarray/ndarray) rust library.
 
 ## Examples
 
-```
+```rust
 use curve_similarities::{frechet, DistMetric};
 use ndarray::array;
 
@@ -33,6 +37,7 @@ Currently still using `ndarray` version `0.15.0` in order to use `ndarray-stats`
 [dependencies]
 approx = "0.3.2"
 ndarray = "0.15.0"
+ndarray-interp = "0.4.1"
 ndarray-stats = "0.5.1"
 num = "0.4.3"
 ```
