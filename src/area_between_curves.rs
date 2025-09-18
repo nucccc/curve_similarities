@@ -1,27 +1,25 @@
-use std::ops::Mul;
-
 use ndarray::{array, s, stack, Array1, Array2, Axis};
 use ndarray_stats::QuantileExt;
-use num::{traits::float, Float, FromPrimitive, Signed, Zero};
+use num::{Float, FromPrimitive, Signed, Zero};
 use ndarray_interp::interp1d::{Interp1D, Linear};
 
 use crate::dist_matrix::euclidean_dist;
 
-fn area_between_two_curves<T>(
+pub fn area_between_two_curves<T>(
     arr1: &Array2<T>,
     arr2: &Array2<T>
 ) -> T
 where
-T : Float + Signed + std::ops::AddAssign + std::convert::From<i32> + std::convert::Into<f64> + std::fmt::Debug + std::marker::Send
+T : Float + Signed + std::ops::AddAssign + std::convert::From<i32> + std::convert::Into<f64> + std::fmt::Debug + std::marker::Send + FromPrimitive + 'static
 {
-    let short = if arr1.len() < arr2.len() {arr1} else {arr2};
-    let long = if arr1.len() < arr2.len() {arr2} else {arr1};
+    let short = if arr1.shape()[0] < arr2.shape()[0] {arr1} else {arr2};
+    let long = if arr1.shape()[0] < arr2.shape()[0] {arr2} else {arr1};
 
-    let longed = enlarge(short, long.len());
+    let longed = enlarge(short, long.shape()[0]);
 
     let mut area: T = Zero::zero();
 
-    for i in 1..longed.len() {
+    for i in 1..longed.shape()[0] {
         let mut tx: Array1<T> = array![
             longed.row(i-1)[0],
             longed.row(i)[0],
@@ -121,7 +119,7 @@ fn make_quad<T>(
     y: &mut Array1<T>,
 ) -> T
 where 
-T : Float
+T : Float + Signed + FromPrimitive + 'static
 {
     let mut c: T;
     if ! is_simple_quad(
@@ -154,16 +152,16 @@ T : Float
             c = x[2];
             x[2] = x[0];
             x[0] = x[1];
-            x[1] = x[2];
+            x[1] = c;
 
             c = y[2];
             y[2] = y[0];
             y[0] = y[1];
-            y[1] = y[2];
+            y[1] = c;
         }
     }
     
-    x[0]
+    poly_area(x, y)
 }
 
 pub fn arc_len<T>(arr : &Array2<T>) -> Array1<f64>
@@ -173,12 +171,9 @@ where
     let fs = arr.slice(s![..-1, ..]);
     let ls = arr.slice(s![1.., ..]);
 
-    //println!("{:?}", ls);
-
     let mut res: Array1<f64> = Array1::zeros(ls.dim().0 );
 
     for i in 0..ls.dim().0 {
-        //println!("{}", i);
         res[i] = euclidean_dist(&ls.row(i), &fs.row(i))
     }
 

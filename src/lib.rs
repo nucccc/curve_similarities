@@ -15,7 +15,7 @@ mod frechet;
 
 pub use dist_matrix::DistMetric;
 
-pub use area_between_curves::is_simple_quad;
+pub use area_between_curves::{area_between_two_curves, is_simple_quad};
 pub use curve_len::curve_len_measure;
 pub use dtw::dtw;
 pub use frechet::frechet;
