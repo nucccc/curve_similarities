@@ -9,7 +9,7 @@ fn test_area_between_two_curves() {
 
     let res = area_between_two_curves(&arr1, &arr2);
 
-    assert_eq!(res, 0.09999999999999995);
+    assert_eq!(res, 0.09999999999999996);
 }
 
 #[test]
@@ -20,4 +20,14 @@ fn test_area_between_two_curves2() {
     let res = area_between_two_curves(&arr1, &arr2);
 
     assert_eq!(res, 1.0);
+}
+
+#[test]
+fn test_area_between_two_curves3() {
+    let arr1 = array![[0.1, 0.3], [0.12, 2.0], [0.18, 1.8], [0.2, 0.4]];
+    let arr2 = array![[0.1, 0.6], [0.2, 0.7], [0.3, 1.0]];
+
+    let res = area_between_two_curves(&arr1, &arr2);
+
+    assert_eq!(res, 0.1909999999999999);
 }

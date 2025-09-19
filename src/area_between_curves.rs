@@ -21,19 +21,22 @@ T : Float + Signed + std::ops::AddAssign + std::convert::From<i32> + std::conver
 
     for i in 1..longed.shape()[0] {
         let mut tx: Array1<T> = array![
-            longed.row(i-1)[0],
-            longed.row(i)[0],
-            long.row(i)[0],
             long.row(i-1)[0],
+            long.row(i)[0],
+            longed.row(i)[0],
+            longed.row(i-1)[0],
         ];
         let mut ty: Array1<T> = array![
-            longed.row(i-1)[1],
-            longed.row(i)[1],
-            long.row(i)[1],
             long.row(i-1)[1],
+            long.row(i)[1],
+            longed.row(i)[1],
+            longed.row(i-1)[1],
         ];
 
-        area += make_quad(&mut tx, &mut ty);
+        let mq = make_quad(&mut tx, &mut ty);
+        println!("{:?}", mq);
+
+        area += mq;
     }
 
     area
@@ -114,7 +117,7 @@ T : Float + Signed + FromPrimitive + 'static
 }
 
 
-fn make_quad<T>(
+pub fn make_quad<T>(
     x: &mut Array1<T>,
     y: &mut Array1<T>,
 ) -> T
@@ -122,6 +125,7 @@ where
 T : Float + Signed + FromPrimitive + 'static
 {
     let mut c: T;
+
     if ! is_simple_quad(
         x[1]-x[0],
         y[1]-y[0],
@@ -357,5 +361,15 @@ mod tests {
         );
         
         assert!(quad);
+    }
+
+    #[test]
+    fn test_make_quad() {
+        let mut x = array![0.1, 0.2, 0.12, 0.1];
+        let mut y = array![0.6, 0.7, 2.0, 0.3];
+
+        let mq = make_quad(&mut x, &mut y);
+        
+        assert_eq!(mq, 0.08399999999999999);
     }
 }
