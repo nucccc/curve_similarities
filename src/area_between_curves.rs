@@ -4,14 +4,18 @@ use num::{Float, FromPrimitive, Signed, Zero};
 use ndarray_interp::interp1d::{Interp1D, Linear};
 
 use crate::dist_matrix::euclidean_dist;
+use crate::errors::validate_two_dim_array;
 
 pub fn area_between_two_curves<T>(
     arr1: &Array2<T>,
     arr2: &Array2<T>
-) -> T
+) -> Result<T, String>
 where
 T : Float + Signed + std::ops::AddAssign + std::convert::From<i32> + std::convert::Into<f64> + std::fmt::Debug + std::marker::Send + FromPrimitive + 'static
 {
+    validate_two_dim_array(arr1)?;
+    validate_two_dim_array(arr2)?;
+
     let short = if arr1.shape()[0] < arr2.shape()[0] {arr1} else {arr2};
     let long = if arr1.shape()[0] < arr2.shape()[0] {arr2} else {arr1};
 
@@ -39,7 +43,7 @@ T : Float + Signed + std::ops::AddAssign + std::convert::From<i32> + std::conver
         area += mq;
     }
 
-    area
+    Ok(area)
 }
 
 fn cross_2d<T>(v0_0 : T, v0_1 : T, v1_0 : T, v1_1 : T) -> T

@@ -4,6 +4,8 @@ use num::{Float, Signed, FromPrimitive, One};
 use ndarray_stats::QuantileExt;
 use ndarray_interp::interp1d::{Interp1D, Linear};
 
+use crate::errors::validate_two_dim_array;
+
 fn calc_length<T>(
     x : &ArrayView<T, Ix1>,
     y : &ArrayView<T, Ix1>,
@@ -41,10 +43,13 @@ where
     (le, l_sum)
 }
 
-pub fn curve_len_measure<T>(arr1: &Array2<T>, arr2: &Array2<T>) -> f64
+pub fn curve_len_measure<T>(arr1: &Array2<T>, arr2: &Array2<T>) -> Result<f64, String>
 where
     T : Float + Signed + std::ops::AddAssign + Default + FromPrimitive + ScalarOperand + Debug + std::marker::Send + std::ops::Add<T> + std::convert::Into<f64>
 {
+    validate_two_dim_array(arr1)?;
+    validate_two_dim_array(arr2)?;
+
     let x1 = arr1.column(0);
     let y1 = arr1.column(1);
     let x2 = arr2.column(0);
@@ -91,5 +96,5 @@ where
         .map(|val| val.ln())
         .map(|val| val.powi(2));
 
-    (x_interp_minus + y_interp_minus).sum().sqrt().into() as f64
+    Ok((x_interp_minus + y_interp_minus).sum().sqrt().into() as f64)
 }
