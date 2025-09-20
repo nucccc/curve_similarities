@@ -1,14 +1,17 @@
 [package]
 name = "curve_similarities"
 authors = ["nucccc <dan.dom.nuc@gmail.com>"]
-version = "0.1.0"
+version = "0.2.0"
+homepage = "https://github.com/nucccc/curve_similarities"
+documentation = "https://docs.rs/curve_similarities"
+repository = "https://github.com/nucccc/curve_similarities"
 edition = "2021"
 
 license = "MIT"
 
 readme = "readme.md"
 
-description = "Calculation of curve similarities for 2-dimensional arrays"
+description = "Calculation of curve similarities for nd-array"
 
 keywords = ["mathematics", "science", "numerical", "curve", "calculations"]
 categories = ["mathematics", "science"]
@@ -17,7 +20,7 @@ categories = ["mathematics", "science"]
 
 [dependencies]
 approx = "0.3.2"
-ndarray = "0.15.0"
-ndarray-interp = "0.4.1"
-ndarray-stats = "0.5.1"
+ndarray = "0.16.0"
+ndarray-interp = "0.5.0"
+ndarray-stats = "0.6.0"
 num = "0.4.3"

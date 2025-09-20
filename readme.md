@@ -22,22 +22,9 @@ fn main() {
         &array![[1.0], [1.0], [3.0]],
         &array![[2.0], [4.0]],
         DistMetric::Euclidean
-    );
+    ).unwrap();
 
     println!("Frechet distance between curves is {}", fr);
 }
 
-```
-
-## Dependencies
-
-Currently still using `ndarray` version `0.15.0` in order to use `ndarray-stats` for pointwise distance.
-
-```
-[dependencies]
-approx = "0.3.2"
-ndarray = "0.15.0"
-ndarray-interp = "0.4.1"
-ndarray-stats = "0.5.1"
-num = "0.4.3"
 ```
