@@ -4,6 +4,14 @@ use num::{Float, Signed};
 use crate::dist_matrix::{metric_func, calc_dist_matrix, DistMetric};
 use crate::errors::error_dims_str;
 
+/* Calculates the Dynamic Time Warping
+
+Expects in input two arrays which can have a different number of rows,
+but expects their rows to have the same size, since every row from the first
+input array will have its distance calculated from the rows of the second
+input array
+
+Returns an error in case the row sizes of the two arrays differ*/
 pub fn dtw<T>(arr1: &Array2<T>, arr2: &Array2<T>, metric : DistMetric) -> Result<f64, String>
 where
     T : Float + Signed + std::ops::AddAssign + std::convert::Into<f64>

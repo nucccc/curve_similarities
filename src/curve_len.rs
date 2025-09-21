@@ -39,10 +39,19 @@ where
         l_sum[i + 1] = l_sum[i] + le[i + 1];
     }
 
-    // TODO: remove, and return the tuple as in the original implementation
     (le, l_sum)
 }
 
+/* Calculates the  distance between two curves according to: A Andrade-Campos,
+R De-Carvalho, and R A F Valente "Novel criteria for determination of material
+model parameters"
+
+Expects two arrays' rows be be of length 2. Having two elements with the first
+element being the value on the x axis, while the second element will represent
+the value on the y axis of the curve
+
+Returns an error in case any of the two input arrays has rows of length
+different than 2 */
 pub fn curve_len_measure<T>(arr1: &Array2<T>, arr2: &Array2<T>) -> Result<f64, String>
 where
     T : Float + Signed + std::ops::AddAssign + Default + FromPrimitive + ScalarOperand + Debug + std::marker::Send + std::ops::Add<T> + std::convert::Into<f64>

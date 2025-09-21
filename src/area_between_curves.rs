@@ -6,6 +6,17 @@ use ndarray_interp::interp1d::{Interp1D, Linear};
 use crate::dist_matrix::euclidean_dist;
 use crate::errors::validate_two_dim_array;
 
+/* Calculates the  distance between two curves according to: Jekel, C. F.,
+Venter, G., Venter, M. P., Stander, N., & Haftka, R. T. (2018) "Similarity
+measures for identifying material parameters from hysteresis loops using
+inverse analysis"
+
+Expects two arrays' rows be be of length 2. Having two elements with the first
+element being the value on the x axis, while the second element will represent
+the value on the y axis of the curve
+
+Returns an error in case any of the two input arrays has rows of length
+different than 2 */
 pub fn area_between_two_curves<T>(
     arr1: &Array2<T>,
     arr2: &Array2<T>
