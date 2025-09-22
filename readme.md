@@ -12,12 +12,17 @@ The library requires in input a bidimensional array of the [ndarray](https://git
 
 ## Examples
 
+### DTW and Frechet distances
+
+Frechet and DTW distances require in input two curves with a different number of rows, but with the same length for the rows:
+
 ```rust
 use curve_similarities::{frechet, DistMetric};
 use ndarray::array;
 
 
 fn main() {
+    // calculating frechet distance
     let fr = frechet(
         &array![[1.0], [1.0], [3.0]],
         &array![[2.0], [4.0]],
@@ -25,6 +30,44 @@ fn main() {
     ).unwrap();
 
     println!("Frechet distance between curves is {}", fr);
+}
+
+```
+
+As an example one can have curves constituted by samples of 4 values (let's say that we are measuring some whatever with 4 different sensors). In such case every row of the array shall have 4 different values, while the arrays can have a different number of rows: 
+
+```rust
+use curve_similarities::{dtw, DistMetric};
+use ndarray::array;
+
+fn main() {
+    // calculating dynamic time warping
+    let dtw_dist = dtw(
+        &array![[1.0, 2.0, 3.0, 6.0], [1.0, 4.0, 7.0, 9.0], [3.0, 1.0, -1.0, 2.0]],
+        &array![[2.0, 5.0, -7.0, 4.0], [4.0, 2.0, 4.0, 2.0]],
+        DistMetric::Euclidean
+    ).unwrap();
+
+    println!("Dynamic Time Warping between curves is {}", dtw_dist);
+}
+```
+
+Since the underlying calculation is based on the pairwise distance between every row, it is possible to specify the pairwise distance metric, which can be either the euclidean or the manhattan distance.
+
+### `curve_len_measure` and `area_between_two_curves`
+
+`curve_len_measure` and `area_between_two_curves` require each one two bidimensional arrays to be provided in input. Each bidimensional array can have the first dimension to be of whatever size, but the second dimension should be of size 2. So every row shall have two elements, the first the value on the x axis and the second being the one on the y axis:
+
+```rust
+use curve_similarities::curve_len_measure;
+use ndarray::array;
+
+
+fn main() {
+    let arr1 = array![[0.1, 0.2], [0.3, 0.4]];
+    let arr2 = array![[0.5, 0.6], [0.7, 0.8], [0.9, 1.0]];
+
+    let res = curve_len_measure(&arr1, &arr2).unwrap();
 }
 
 ```
