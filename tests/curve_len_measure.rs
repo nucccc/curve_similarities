@@ -10,6 +10,26 @@ fn test_curve_len_measure() {
     let res = curve_len_measure(&arr1, &arr2).unwrap();
 
     assert_eq!(res, 2.248026610499685);
+
+    let arr1 = array![
+        [0.1, 0.2],
+        [0.3, 0.4],
+        [0.5, 0.3],
+        [0.7, 0.2],
+        [0.9, 0.2],
+        [1.1, 0.2],
+    ];
+    let arr2 = array![
+        [0.5, 0.6],
+        [0.6, 1.0],
+        [0.7, 0.8],
+        [0.8, 0.8],
+        [0.9, 1.0],
+    ];
+
+    let res = curve_len_measure(&arr1, &arr2).unwrap();
+
+    assert_eq!(res, 3.01124826717954);
 }
 
 #[test]
