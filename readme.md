@@ -1,5 +1,8 @@
 # curve_similarities
 
+![Version](https://img.shields.io/crates/v/curve_similarities.svg)
+![License](https://img.shields.io/crates/l/curve_similarities.svg)
+
 Implementation of calculations for curves similarities as in python package [similarity_measures](https://github.com/cjekel/similarity_measures).
 
 The following distances are currently implemented:
