@@ -1,6 +1,6 @@
 use curve_similarities::{frechet, DistMetric};
 
-use ndarray::array;
+use ndarray::{Array2, array};
 
 #[test]
 fn test_frechet_euclidean() {
@@ -116,4 +116,34 @@ fn test_frechet_wrong_dims() {
     );
 
     assert!(fr_err.is_err());
+}
+
+#[test]
+fn test_frechet_empty() {
+    let arr1: Array2<f64> = Array2::<f64>::default((0, 2));
+    let arr2: Array2<f64> = Array2::<f64>::default((0, 2));
+
+    let frechet_err = frechet(
+        &arr1,
+        &arr2,
+        DistMetric::Euclidean
+    );
+
+    assert!(frechet_err.is_err());
+
+    let frechet_err = frechet(
+        &array![[1.0], [3.0], [4.0]],
+        &arr2,
+        DistMetric::Euclidean
+    );
+
+    assert!(frechet_err.is_err());
+
+    let frechet_err = frechet(
+        &arr1,
+        &array![[1.0], [3.0], [4.0]],
+        DistMetric::Euclidean
+    );
+
+    assert!(frechet_err.is_err());
 }

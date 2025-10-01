@@ -1,6 +1,6 @@
 use curve_similarities::{dtw, DistMetric};
 
-use ndarray::array;
+use ndarray::{Array2, array};
 
 #[test]
 fn test_dtw_euclidean() {
@@ -105,6 +105,36 @@ fn test_dtw_wrong_dims() {
     let dtw_err = dtw(
         &array![[1.0], [3.0], [4.0]],
         &array![[1.0, 2.0], [7.3, 3.7]],
+        DistMetric::Euclidean
+    );
+
+    assert!(dtw_err.is_err());
+}
+
+#[test]
+fn test_dtw_empty() {
+    let arr1: Array2<f64> = Array2::<f64>::default((0, 2));
+    let arr2: Array2<f64> = Array2::<f64>::default((0, 2));
+
+    let dtw_err = dtw(
+        &arr1,
+        &arr2,
+        DistMetric::Euclidean
+    );
+
+    assert!(dtw_err.is_err());
+
+    let dtw_err = dtw(
+        &array![[1.0], [3.0], [4.0]],
+        &arr2,
+        DistMetric::Euclidean
+    );
+
+    assert!(dtw_err.is_err());
+
+    let dtw_err = dtw(
+        &arr1,
+        &array![[1.0], [3.0], [4.0]],
         DistMetric::Euclidean
     );
 

@@ -22,6 +22,10 @@ where
         return Err(error_dims_str(arr1.dim().1, arr2.dim().1));
     }
 
+    if arr1.len() == 0 || arr2.len() == 0 {
+        return Err("Input array cannot have 0 length".to_string());
+    }
+
     let dist_func = metric_func(metric);
     
     let dist_matrix = calc_dist_matrix(arr1, arr2, dist_func);
