@@ -1,6 +1,6 @@
 # curve_similarities
 
-![Version](https://img.shields.io/crates/v/curve_similarities.svg)
+[![Version](https://img.shields.io/crates/v/curve_similarities.svg)](https://crates.io/crates/curve_similarities)
 ![License](https://img.shields.io/crates/l/curve_similarities.svg)
 
 Implementation of calculations for curves similarities as in python package [similarity_measures](https://github.com/cjekel/similarity_measures).
