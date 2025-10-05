@@ -6,7 +6,7 @@ use ndarray_interp::interp1d::{Interp1D, Linear};
 use crate::dist_matrix::euclidean_dist;
 use crate::errors::validate_two_dim_array;
 
-/* Calculates the  distance between two curves according to: Jekel, C. F.,
+/** Calculates the  distance between two curves according to: Jekel, C. F.,
 Venter, G., Venter, M. P., Stander, N., & Haftka, R. T. (2018) "Similarity
 measures for identifying material parameters from hysteresis loops using
 inverse analysis"

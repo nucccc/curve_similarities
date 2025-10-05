@@ -42,7 +42,7 @@ where
     (le, l_sum)
 }
 
-/* Calculates the  distance between two curves according to: A Andrade-Campos,
+/** Calculates the  distance between two curves according to: A Andrade-Campos,
 R De-Carvalho, and R A F Valente "Novel criteria for determination of material
 model parameters"
 

@@ -4,7 +4,7 @@ use num::{Float, Signed};
 use crate::dist_matrix::{metric_func, calc_dist_matrix, DistMetric};
 use crate::errors::error_dims_str;
 
-/* Calculates the Dynamic Time Warping
+/** Calculates the Dynamic Time Warping
 
 Expects in input two arrays which can have a different number of rows,
 but expects their rows to have the same size, since every row from the first

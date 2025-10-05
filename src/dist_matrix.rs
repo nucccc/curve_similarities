@@ -2,7 +2,7 @@ use ndarray::{Array2, ArrayView, Ix1};
 use num::{Float, Signed};
 use ndarray_stats::DeviationExt;
 
-/* DistMetric represents the possible pairwise distance metrics for elements
+/** DistMetric represents the possible pairwise distance metrics for elements
 to be used when calculating the Frechet distance and Dynamic Time Warping */
 pub enum DistMetric {
     Euclidean,
