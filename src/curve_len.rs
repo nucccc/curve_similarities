@@ -35,7 +35,7 @@ where
     let mut l_sum : Array1<T> = Array1::zeros( n );
 
     for i in 0..(n-1) {
-        le [i + 1] = ((((x[i + 1] - x[i]) / x_max)).powi(2) + (((y[i + 1] - y[i]) / y_max)).powi(2)).sqrt();
+        le [i + 1] = (((x[i + 1] - x[i]) / x_max).powi(2) + ((y[i + 1] - y[i]) / y_max).powi(2)).sqrt();
         l_sum[i + 1] = l_sum[i] + le[i + 1];
     }
 
@@ -72,13 +72,13 @@ where
 
     let li1q = l_sum1.clone() * (l_sum2.sum() / l_sum1.sum());
 
-    let x_interpolator = Interp1D::builder(x2.clone())
+    let x_interpolator = Interp1D::builder(x2)
         .x(l_sum2.clone())
         .strategy(Linear::new())
         .build()
         .unwrap();
 
-    let y_interpolator = Interp1D::builder(y2.clone())
+    let y_interpolator = Interp1D::builder(y2)
         .x(l_sum2.clone())
         .strategy(Linear::new())
         .build()
@@ -105,5 +105,5 @@ where
         .map(|val| val.ln())
         .map(|val| val.powi(2));
 
-    Ok((x_interp_minus + y_interp_minus).sum().sqrt().into() as f64)
+    Ok((x_interp_minus + y_interp_minus).sum().sqrt().into())
 }

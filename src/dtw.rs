@@ -22,7 +22,7 @@ where
         return Err(error_dims_str(arr1.dim().1, arr2.dim().1));
     }
 
-    if arr1.len() == 0 || arr2.len() == 0 {
+    if arr1.is_empty() || arr2.is_empty() {
         return Err("Input array cannot have 0 length".to_string());
     }
 

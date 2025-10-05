@@ -26,7 +26,7 @@ fn manhattan_dist<T>(
 where
 T : Float + Signed + std::ops::AddAssign + std::convert::Into<f64>// + RawData
 {
-    row1.l1_dist(row2).unwrap().into() as f64
+    row1.l1_dist(row2).unwrap().into()
 }
 
 pub fn metric_func<T>(metric : DistMetric) -> fn(

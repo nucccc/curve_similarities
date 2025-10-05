@@ -49,7 +49,6 @@ T : Float + Signed + std::ops::AddAssign + std::convert::From<i32> + std::conver
         ];
 
         let mq = make_quad(&mut tx, &mut ty);
-        println!("{:?}", mq);
 
         area += mq;
     }
