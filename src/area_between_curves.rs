@@ -63,8 +63,8 @@ T : Float
     (v0_0 * v1_1) - (v0_1 * v1_0)
 }
 
-// TODO: one day this shall not be public anymore
-pub fn is_simple_quad<T>(
+#[warn(clippy::too_many_arguments)]
+fn is_simple_quad<T>(
     v0_0 : T, v0_1 : T,
     v1_0 : T, v1_1 : T,
     v2_0 : T, v2_1 : T,
@@ -242,9 +242,10 @@ where
         .build()
         .unwrap();
 
-        let new_y = interpolator.interp_array(&new_x).unwrap();
+    let new_y = interpolator.interp_array(&new_x).unwrap();
 
-    stack(Axis(1), &[new_x.view(), new_y.view()]).unwrap().into_shape((desired_size, 2)).unwrap()
+    // TODO: maybe there is a faster way to return this array
+    stack(Axis(1), &[new_x.view(), new_y.view()]).unwrap().into_shape_clone((desired_size, 2)).unwrap()
 }
 
 #[cfg(test)]
