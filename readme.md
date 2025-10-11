@@ -17,7 +17,23 @@ The library requires in input a bidimensional array of the [ndarray](https://git
 
 ### DTW and Frechet distances
 
-Frechet and DTW distances require in input two curves with a different number of rows, but with the same length for the rows:
+Frechet and DTW distances require in input two curves, potentially with different lengths.
+
+`frechet` and `dtw` are designed to receive in input a couple of types satisfying `DistMatCalc` trait, meaning that a pairwise distance matrix can be calculated out of them. At the moment the trait is implemented for:
+- `ndarray::Array1<T>` with `T` being a float
+- `ndarray::Array2<T>` with `T` being a float
+
+As a third argument a `DistMetric` enum is necessary to specify the type of pairwise distance calculation.
+
+#### DistMetric
+
+Since the underlying calculation is based on the pairwise distance between every row, it is possible to specify the pairwise distance metric, which can be either:
+- `DistMetric::Euclidean`
+- `DistMetric::Manhattan`
+
+#### `ndarray::Array1<T>` input
+
+When providing in input a `ndarray::Array1` input, each element of the array is going to be considered as a single sample:
 
 ```rust
 use curve_similarities::{frechet, DistMetric};
@@ -27,15 +43,18 @@ use ndarray::array;
 fn main() {
     // calculating frechet distance
     let fr = frechet(
-        &array![[1.0], [1.0], [3.0]],
-        &array![[2.0], [4.0]],
+        &array![1.0, 1.0, 3.0],
+        &array![2.0, 4.0],
         DistMetric::Euclidean
     ).unwrap();
 
     println!("Frechet distance between curves is {}", fr);
 }
-
 ```
+
+#### `ndarray::Array2<T>` input
+
+When providing in input a `ndarray::Array2<T>` every row is expected to have the same length, while the two arrays can have different lengths (since the curves can be of different legths, but their single elements need to be of the same size).
 
 As an example one can have curves constituted by samples of 4 values (let's say that we are measuring some whatever with 4 different sensors). In such case every row of the array shall have 4 different values, while the arrays can have a different number of rows: 
 
@@ -55,7 +74,7 @@ fn main() {
 }
 ```
 
-Since the underlying calculation is based on the pairwise distance between every row, it is possible to specify the pairwise distance metric, which can be either the euclidean or the manhattan distance.
+in the above example the first curve is composed of 3 points, while the second one is composed of two points.
 
 ### `curve_len_measure` and `area_between_two_curves`
 
@@ -67,10 +86,12 @@ use ndarray::array;
 
 
 fn main() {
-    let arr1 = array![[0.1, 0.2], [0.3, 0.4]];
-    let arr2 = array![[0.5, 0.6], [0.7, 0.8], [0.9, 1.0]];
+    let arr1 = array![[0.1, 2.27], [0.3, 2.24]];
+    let arr2 = array![[0.2, 2.61], [0.3, 2.68], [0.4, 2.14]];
 
     let res = curve_len_measure(&arr1, &arr2).unwrap();
 }
 
 ```
+
+in the case above the first curve `arr1` is composed of two points, having values on the x-axis `0.1` and `0.3` respectively, and values on the y-axis `2.27` and `2.24` respectively. The second curve `arr2` has `0.2`, `0.3` and `0.4` on the x-axis, while `2.61`, `2.68` and `2.14` are on the y-axis.
