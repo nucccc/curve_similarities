@@ -1,3 +1,5 @@
+/* this file contains code to compute pairwise distances using ndarray */
+
 use ndarray::{ArrayView, Ix1};
 use ndarray_stats::DeviationExt;
 use num::{Float, Signed};
@@ -26,7 +28,7 @@ T : Float + Signed + AddAssign + std::convert::Into<f64>// + RawData
     row1.l1_dist(row2).unwrap().into()
 }
 
-
+/** metric_func returns the appropriate ndarray deviation function given a metric */
 pub fn metric_func<T>(metric : DistMetric) -> fn(
     row1 : &ArrayView<T, Ix1>,
     row2 : &ArrayView<T, Ix1>

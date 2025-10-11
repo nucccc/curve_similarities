@@ -22,6 +22,9 @@ Frechet and DTW distances require in input two curves, potentially with differen
 `frechet` and `dtw` are designed to receive in input a couple of types satisfying `DistMatCalc` trait, meaning that a pairwise distance matrix can be calculated out of them. At the moment the trait is implemented for:
 - `ndarray::Array1<T>` with `T` being a float
 - `ndarray::Array2<T>` with `T` being a float
+- `Vec<T>` with `T` being a float
+- `Vec<Vec<T>>` with `T` being a float
+- `Vec<[T; N]>` with `T` being a float and `N` the array size
 
 As a third argument a `DistMetric` enum is necessary to specify the type of pairwise distance calculation.
 

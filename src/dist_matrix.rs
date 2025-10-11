@@ -5,19 +5,7 @@ use num::{Float, Signed};
 use crate::errors::error_dims_str;
 use crate::pairwise::{DistMetric, PairDiff, metric_func, smetric_func};
 
-/** DistMetric represents the possible pairwise distance metrics for elements
-to be used when calculating the Frechet distance and Dynamic Time Warping */
-/*
-pub enum DistMetric {
-    Euclidean,
-    Manhattan
-}
-*/
-
-
-
-// generic dist matrix calculation
-
+/* dist_mat_calc calculates a pairwise distance */
 pub fn dist_mat_calc<DMC>(
     a1: DMC,
     a2: DMC,
@@ -28,6 +16,9 @@ where DMC: DistMatCalc
     a1.dist_mat(&a2, metric)
 }
 
+/** DistMatCalc defines a trait for types for which can be computed a pairwise
+ * distance matrix
+ */
 pub trait DistMatCalc {
     fn dist_mat(&self, other: &Self, metric: DistMetric) -> Result<Array2<f64>, String>;
 }
@@ -93,7 +84,7 @@ where TPD: PairDiff
 
         for i in 0..self.len() {
             for j in 0..other.len() {
-                dists.row_mut(i)[j] = dist_func(&self[i], &other[j]);//self[i].pdiff(&other[j]).into();
+                dists.row_mut(i)[j] = dist_func(&self[i], &other[j])?;//self[i].pdiff(&other[j]).into();
             }
         }
 
