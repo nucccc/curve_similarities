@@ -1,8 +1,6 @@
 use ndarray::Array2;
-use num::{Float, Signed};
 
-use crate::dist_matrix::{metric_func, calc_dist_matrix, DistMetric};
-use crate::errors::error_dims_str;
+use crate::dist_matrix::{dist_mat_calc, DistMetric, DistMatCalc};
 
 /** Calculates the Frechet distance between two curves
 
@@ -12,23 +10,15 @@ input array will have its distance calculated from the rows of the second
 input array
 
 Returns an error in case the row sizes of the two arrays differ*/
-pub fn frechet<T>(arr1: &Array2<T>, arr2: &Array2<T>, metric : DistMetric) -> Result<f64, String>
+pub fn frechet<DMC>(arr1: DMC, arr2: DMC, metric : DistMetric) -> Result<f64, String>
 where
-    T : Float + Signed + std::ops::AddAssign + std::convert::Into<f64>
+    DMC: DistMatCalc
 {
-    let dim1 = arr1.dim().1;
-    let dim2 = arr2.dim().1;
-    if dim1 != dim2 {
-        return Err(error_dims_str(arr1.dim().1, arr2.dim().1));
-    }
+    //let dist_func = metric_func(metric);
 
-    if arr1.is_empty() || arr2.is_empty() {
-        return Err("Input array cannot have 0 length".to_string());
-    }
-
-    let dist_func = metric_func(metric);
-
-    let dist_matrix = calc_dist_matrix(arr1, arr2, dist_func);
+    let dist_matrix = dist_mat_calc(arr1, arr2, metric)?;
+    
+    //let dist_matrix = calc_dist_matrix(arr1, arr2, dist_func);
     
     Ok(frechet_walk(&dist_matrix))
 }

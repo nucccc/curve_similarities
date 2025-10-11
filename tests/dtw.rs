@@ -54,6 +54,25 @@ fn test_dtw_euclidean() {
 }
 
 #[test]
+fn test_dtw_euclidean_single_dim_array() {
+    let dtw0 = dtw(
+        &array![1.0, 1.0, 3.0],
+        &array![2.0, 4.0],
+        DistMetric::Euclidean
+    ).unwrap();
+
+    assert_eq!(dtw0, 3.0);
+
+    let dtw1 = dtw(
+        &array![1.0, 3.0, 4.0],
+        &array![1.0, 7.3],
+        DistMetric::Euclidean
+    ).unwrap();
+
+    assert_eq!(dtw1, 5.3);
+}
+
+#[test]
 fn test_dtw_euclidean_f32() {
     let dtw0 = dtw(
         &array![[1.0_f32], [1.0], [3.0]],
