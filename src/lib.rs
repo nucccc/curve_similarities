@@ -12,8 +12,9 @@ mod area_between_curves;
 mod curve_len;
 mod dtw;
 mod frechet;
+mod pairwise;
 
-pub use dist_matrix::DistMetric;
+pub use pairwise::DistMetric;
 
 pub use area_between_curves::area_between_two_curves;
 pub use curve_len::curve_len_measure;

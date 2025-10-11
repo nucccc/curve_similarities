@@ -1,49 +1,20 @@
-use ndarray::{Array1, Array2, ArrayView, Ix1};
+use ndarray::{Array1, Array2};
 use num::{Float, Signed};
-use ndarray_stats::DeviationExt;
 
 
 use crate::errors::error_dims_str;
+use crate::pairwise::{DistMetric, PairDiff, metric_func, smetric_func};
 
 /** DistMetric represents the possible pairwise distance metrics for elements
 to be used when calculating the Frechet distance and Dynamic Time Warping */
+/*
 pub enum DistMetric {
     Euclidean,
     Manhattan
 }
+*/
 
-pub fn euclidean_dist<T>(
-    row1 : &ArrayView<T, Ix1>,
-    row2 : &ArrayView<T, Ix1>
-) -> f64
-where
-T : Float + Signed + std::ops::AddAssign + std::convert::Into<f64>// + RawData
-{
-    row1.l2_dist(row2).unwrap()
-}
 
-fn manhattan_dist<T>(
-    row1 : &ArrayView<T, Ix1>,
-    row2 : &ArrayView<T, Ix1>
-) -> f64
-where
-T : Float + Signed + std::ops::AddAssign + std::convert::Into<f64>// + RawData
-{
-    row1.l1_dist(row2).unwrap().into()
-}
-
-pub fn metric_func<T>(metric : DistMetric) -> fn(
-    row1 : &ArrayView<T, Ix1>,
-    row2 : &ArrayView<T, Ix1>
-) -> f64
-where
-T : Float + Signed + std::ops::AddAssign + std::convert::Into<f64>
-{
-    match metric {
-        DistMetric::Euclidean => euclidean_dist,
-        DistMetric::Manhattan => manhattan_dist
-    }
-}
 
 // generic dist matrix calculation
 
@@ -62,7 +33,7 @@ pub trait DistMatCalc {
 }
 
 impl<T> DistMatCalc for &Array2<T>
-where T: Copy + Signed + std::ops::AddAssign + Float + std::convert::Into<f64>
+where T: Copy + Signed + std::ops::AddAssign + Float + std::convert::Into<f64> + Default
 {
     fn dist_mat(&self, other: &Self, metric: DistMetric) -> Result<Array2<f64>, String> {
         // checking for errors
@@ -80,8 +51,9 @@ where T: Copy + Signed + std::ops::AddAssign + Float + std::convert::Into<f64>
 
         for i in 0..self.dim().0 {
             for j in 0..other.dim().0 {
-                println!("{} {}", i, j);
-                dists.row_mut(i)[j] = dist_func(&self.row(i), &other.row(j));
+                let row1 = self.row(i);
+                let row2 = other.row(j);
+                dists.row_mut(i)[j] = dist_func(&row1, &row2);
             }
         }
 
@@ -103,6 +75,25 @@ where T: Copy + Signed + std::ops::AddAssign + Float + std::convert::Into<f64>
             for j in 0..other.dim() {
                 println!("{} {}", i, j);
                 dists.row_mut(i)[j] = (self[i] - other[j]).abs().into();
+            }
+        }
+
+        Ok(dists)
+    }
+}
+
+
+impl<TPD> DistMatCalc for &Vec<TPD>
+where TPD: PairDiff
+{
+    fn dist_mat(&self, other: &Self, metric: DistMetric) -> Result<Array2<f64>, String> {
+        let mut dists : Array2<f64> = Array2::zeros(( self.len(), other.len() ));
+
+        let dist_func = smetric_func(metric);
+
+        for i in 0..self.len() {
+            for j in 0..other.len() {
+                dists.row_mut(i)[j] = dist_func(&self[i], &other[j]);//self[i].pdiff(&other[j]).into();
             }
         }
 

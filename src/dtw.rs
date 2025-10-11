@@ -1,6 +1,7 @@
 use ndarray::Array2;
 
-use crate::dist_matrix::{DistMatCalc, DistMetric, dist_mat_calc};
+use crate::dist_matrix::{DistMatCalc, dist_mat_calc};
+use crate::pairwise::DistMetric;
 
 /** Calculates the Dynamic Time Warping
 

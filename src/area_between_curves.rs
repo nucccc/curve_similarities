@@ -3,7 +3,7 @@ use ndarray_stats::QuantileExt;
 use num::{Float, FromPrimitive, Signed, Zero};
 use ndarray_interp::interp1d::{Interp1D, Linear};
 
-use crate::dist_matrix::euclidean_dist;
+use crate::pairwise::euclidean_dist;
 use crate::errors::validate_two_dim_array;
 
 /** Calculates the  distance between two curves according to: Jekel, C. F.,
