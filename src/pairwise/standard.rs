@@ -1,3 +1,5 @@
+/* this file contains code to compute pairwise distances using standard types */
+
 use num::{Float, Signed};
 
 use std::ops::{AddAssign, Sub};
@@ -7,27 +9,30 @@ use crate::pairwise::DistMetric;
 pub fn euclidean_dist<PD>(
     row1 : &PD,
     row2 : &PD,
-) -> f64
+) -> Result<f64, String>
 where
 PD: PairDiff
 {
-    row1.euclidean(&row2).unwrap()
+    row1.euclidean(&row2)
 }
 
 fn manhattan_dist<PD>(
     row1 : &PD,
     row2 : &PD,
-) -> f64
+) -> Result<f64, String>
 where
 PD: PairDiff
 {
-    row1.manhattan(&row2).unwrap()
+    row1.manhattan(&row2)
 }
 
+/** smetric_func returns the metric function for pairwise distance computations
+ * not involving ndarray, but just standard types
+ */
 pub fn smetric_func<PD>(metric : DistMetric) -> fn(
     row1 : &PD,
     row2 : &PD,
-) -> f64
+) -> Result<f64, String>
 where
 PD: PairDiff
 {
@@ -38,7 +43,7 @@ PD: PairDiff
 }
 
 
-/*  trai providing pairwise distance for various primitive types */
+/**  PairDiff trait provides pairwise distance for various primitive types */
 pub trait PairDiff {
     fn euclidean(&self, other: &Self) -> Result<f64, String>;
 
