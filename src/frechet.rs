@@ -1,6 +1,7 @@
 use ndarray::Array2;
 
-use crate::dist_matrix::{dist_mat_calc, DistMetric, DistMatCalc};
+use crate::dist_matrix::{dist_mat_calc, DistMatCalc};
+use crate::pairwise::DistMetric;
 
 /** Calculates the Frechet distance between two curves
 
@@ -18,6 +19,7 @@ where
 
     let dist_matrix = dist_mat_calc(arr1, arr2, metric)?;
     
+    println!("{:?}", dist_matrix);
     //let dist_matrix = calc_dist_matrix(arr1, arr2, dist_func);
     
     Ok(frechet_walk(&dist_matrix))
