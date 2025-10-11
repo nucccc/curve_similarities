@@ -194,6 +194,18 @@ fn test_frechet_euclidean_vec_vec() {
 }
 
 #[test]
+fn test_frechet_euclidean_vec_vec_err() {
+    // just to ensure that if a subvector has a different len an error is returned
+    let res = frechet(
+        &vec![vec![1.0, 2.0], vec![1.0, 4.0], vec![3.0, 1.0]],
+        &vec![vec![2.0, 5.0], vec![4.0, 2.0, 5.0]],
+        DistMetric::Euclidean
+    );
+
+    assert!(res.is_err());
+}
+
+#[test]
 fn test_frechet_euclidean_f32() {
     let fr = frechet(
         &array![[1.0_f32], [1.0], [3.0]],
