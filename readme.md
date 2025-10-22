@@ -19,7 +19,7 @@ The library requires in input a bidimensional array of the [ndarray](https://git
 
 Frechet and DTW distances require in input two curves, potentially with different lengths.
 
-`frechet` and `dtw` are designed to receive in input a couple of types satisfying `DistMatCalc` trait, meaning that a pairwise distance matrix can be calculated out of them. At the moment the trait is implemented for:
+`frechet` and `dtw` functions are designed to receive in input a couple of types satisfying `DistMatCalc` trait, meaning that a pairwise distance matrix can be calculated out of them. At the moment the trait is implemented for:
 - `ndarray::Array1<T>` with `T` being a float
 - `ndarray::Array2<T>` with `T` being a float
 - `Vec<T>` with `T` being a float
@@ -30,11 +30,13 @@ As a third argument a `DistMetric` enum is necessary to specify the type of pair
 
 #### DistMetric
 
-Since the underlying calculation is based on the pairwise distance between every row, it is possible to specify the pairwise distance metric, which can be either:
+Since the underlying calculation is based on the pairwise distance between every point of a curve, it is possible to specify their pairwise distance metric, which can be either:
 - `DistMetric::Euclidean`
 - `DistMetric::Manhattan`
 
-#### `ndarray::Array1<T>` input
+#### Possible types of array inputs
+
+##### `ndarray::Array1<T>` input
 
 When providing in input a `ndarray::Array1` input, each element of the array is going to be considered as a single sample:
 
@@ -55,7 +57,7 @@ fn main() {
 }
 ```
 
-#### `ndarray::Array2<T>` input
+##### `ndarray::Array2<T>` input
 
 When providing in input a `ndarray::Array2<T>` every row is expected to have the same length, while the two arrays can have different lengths (since the curves can be of different legths, but their single elements need to be of the same size).
 
@@ -77,7 +79,59 @@ fn main() {
 }
 ```
 
-in the above example the first curve is composed of 3 points, while the second one is composed of two points.
+in the above example the first curve is composed of 3 points, while the second one is composed of 2 points.
+
+##### `Vec<T>` with `T` being either `f32` or `f64`
+
+In such case the vector is treated as in the case of `ndarray::Array1<T>`, with every element considered as a sample of the curve:
+
+```rust
+use curve_similarities::{dtw, DistMetric};
+
+fn main() {
+    let dtw_dist = dtw(
+        &vec![1.0, 1.0, 3.0],
+        &vec![2.0, 4.0],
+        DistMetric::Euclidean
+    )
+}
+```
+
+##### `Vec<Vec<T>>` with `T` being either `f32` or `f64`
+
+In such case the vector can be seen as in the case of `ndarray::Array2<T>`, with every "subvector" considered as a row.
+
+It is necessary that all "subvectors" have the same length, otherwise an error is returned.
+
+```rust
+use curve_similarities::{dtw, DistMetric};
+
+fn main() {
+    let dtw_dist = dtw(
+        &vec![vec![1.0, 2.0], vec![1.0, 4.0], vec![3.0, 1.0]],
+        &vec![vec![2.0, 5.0], vec![4.0, 2.0]],
+        DistMetric::Euclidean
+    ).unwrap();
+}
+```
+
+##### `Vec<[T; N]>` with `T` being a float and `N` the array size
+
+In such case the vector can be seen as in the case of `ndarray::Array2<T>`, with every array considered as a row.
+
+It is necessary that arrays have the same length for both vectors.
+
+```rust
+use curve_similarities::{dtw, DistMetric};
+
+fn main() {
+    let dtw_dist = dtw(
+        &vec![[1.0, 2.0], [1.0, 4.0], [3.0, 1.0]],
+        &vec![[2.0, 5.0], [4.0, 2.0]],
+        DistMetric::Euclidean
+    ).unwrap();
+}
+```
 
 ### `curve_len_measure` and `area_between_two_curves`
 
