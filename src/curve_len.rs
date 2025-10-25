@@ -42,16 +42,41 @@ where
     (le, l_sum)
 }
 
-/** Calculates the  distance between two curves according to: A Andrade-Campos,
-R De-Carvalho, and R A F Valente "Novel criteria for determination of material
-model parameters"
-
-Expects two arrays' rows be be of length 2. Having two elements with the first
-element being the value on the x axis, while the second element will represent
-the value on the y axis of the curve
-
-Returns an error in case any of the two input arrays has rows of length
-different than 2 */
+/// Calculates the  distance between two curves according to: A Andrade-Campos,
+/// R De-Carvalho, and R A F Valente "Novel criteria for determination of material
+/// model parameters"
+/// 
+/// Expects two arrays' rows be be of length 2. Having two elements with the first
+/// element being the value on the x axis, while the second element will represent
+/// the value on the y axis of the curve
+/// 
+/// Returns an error in case any of the two input arrays has rows of length
+/// different than 2
+/// 
+/// ## Example
+/// 
+/// ```
+/// use curve_similarities::curve_len_measure;
+/// use ndarray::array;
+/// 
+/// let arr1 = array![
+///     [0.1, 0.2],
+///     [0.3, 0.4],
+///     [0.5, 0.3],
+///     [0.7, 0.2],
+///     [0.9, 0.2],
+///     [1.1, 0.2],
+/// ];
+/// let arr2 = array![
+///     [0.5, 0.6],
+///     [0.6, 1.0],
+///     [0.7, 0.8],
+///     [0.8, 0.8],
+///     [0.9, 1.0],
+/// ];
+/// 
+/// let res = curve_len_measure(&arr1, &arr2).unwrap();
+/// ```
 pub fn curve_len_measure<T>(arr1: &Array2<T>, arr2: &Array2<T>) -> Result<f64, String>
 where
     T : Float + Signed + std::ops::AddAssign + Default + FromPrimitive + ScalarOperand + Debug + std::marker::Send + std::ops::Add<T> + std::convert::Into<f64>
