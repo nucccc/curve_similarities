@@ -16,9 +16,8 @@ where DMC: DistMatCalc
     a1.dist_mat(&a2, metric)
 }
 
-/** DistMatCalc defines a trait for types for which can be computed a pairwise
- * distance matrix
- */
+/// DistMatCalc defines a trait for types for which can be computed a pairwise
+/// distance matrix
 pub trait DistMatCalc {
     fn dist_mat(&self, other: &Self, metric: DistMetric) -> Result<Array2<f64>, String>;
 }
