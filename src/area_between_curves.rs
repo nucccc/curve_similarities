@@ -6,17 +6,41 @@ use ndarray_interp::interp1d::{Interp1D, Linear};
 use crate::pairwise::euclidean_dist;
 use crate::errors::validate_two_dim_array;
 
-/** Calculates the  distance between two curves according to: Jekel, C. F.,
-Venter, G., Venter, M. P., Stander, N., & Haftka, R. T. (2018) "Similarity
-measures for identifying material parameters from hysteresis loops using
-inverse analysis"
-
-Expects two arrays' rows be be of length 2. Having two elements with the first
-element being the value on the x axis, while the second element will represent
-the value on the y axis of the curve
-
-Returns an error in case any of the two input arrays has rows of length
-different than 2 */
+/// Calculates the  distance between two curves according to: Jekel, C. F.,
+/// Venter, G., Venter, M. P., Stander, N., & Haftka, R. T. (2018) "Similarity
+/// measures for identifying material parameters from hysteresis loops using
+/// inverse analysis"
+/// 
+/// Expects two arrays' rows be be of length 2. Having two elements with the first
+/// element being the value on the x axis, while the second element will represent
+/// the value on the y axis of the curve
+/// 
+/// Returns an error in case any of the two input arrays has rows of length
+/// different than 2
+/// 
+/// ## Example
+/// ```
+/// use curve_similarities::area_between_two_curves;
+/// use ndarray::array;
+/// 
+/// let arr1 = array![
+///     [0.1, 0.2],
+///     [0.3, 0.4],
+///     [0.5, 0.3],
+///     [0.7, 0.2],
+///     [0.9, 0.2],
+///     [1.1, 0.2],
+/// ];
+/// let arr2 = array![
+///     [0.5, 0.6],
+///     [0.6, 1.0],
+///     [0.7, 0.8],
+///     [0.8, 0.8],
+///     [0.9, 1.0],
+/// ];
+/// 
+/// let res = area_between_two_curves(&arr1, &arr2).unwrap();
+/// ```
 pub fn area_between_two_curves<T>(
     arr1: &Array2<T>,
     arr2: &Array2<T>

@@ -3,14 +3,60 @@ use ndarray::Array2;
 use crate::dist_matrix::{DistMatCalc, dist_mat_calc};
 use crate::pairwise::DistMetric;
 
-/** Calculates the Dynamic Time Warping
-
-Expects in input two arrays which can have a different number of rows,
-but expects their rows to have the same size, since every row from the first
-input array will have its distance calculated from the rows of the second
-input array
-
-Returns an error in case the row sizes of the two arrays differ*/
+/// Calculates the Dynamic Time Warping
+/// 
+/// Expects in input:
+/// - two arrays/vectors whose elements pairwise distance can be calculated (in
+/// this they shall satisfy the `DistMatCalc`)
+/// - a `DistMetric` specifying which type of pairwise distance is going to be
+/// used
+/// 
+/// Returns an error in case the row sizes of the two arrays differ
+/// 
+/// ## Types that implement the `DistMatCalc` trait
+/// 
+/// - `ndarray::Array1<T>` with `T` being a float
+/// - `ndarray::Array2<T>` with `T` being a float
+/// - `Vec<T>` with `T` being a float
+/// - `Vec<Vec<T>>` with `T` being a float
+/// - `Vec<[T; N]>` with `T` being a float and `N` the array size
+/// 
+/// ## Example
+/// ```
+/// use curve_similarities::{dtw, DistMetric};
+/// use ndarray::array;
+/// 
+/// 
+/// let val = dtw(
+///     &array![1.0, 1.0, 3.0],
+///     &array![2.0, 4.0],
+///     DistMetric::Euclidean
+/// ).unwrap();
+/// 
+/// let val = dtw(
+///     &array![[1.0, 2.0], [1.0, 3.0], [3.0, 3.0]],
+///     &array![[2.0, 4.0], [4.0, 4.0]],
+///     DistMetric::Euclidean
+/// ).unwrap();
+/// 
+/// let val = dtw(
+///     &vec![1.0, 1.0, 3.0],
+///     &vec![2.0, 4.0],
+///     DistMetric::Euclidean
+/// ).unwrap();
+/// 
+/// let val = dtw(
+///     &vec![[1.0, 2.0], [1.0, 3.0], [3.0, 3.0]],
+///     &vec![[2.0, 4.0], [4.0, 4.0]],
+///     DistMetric::Euclidean
+/// ).unwrap();
+/// 
+/// let val = dtw(
+///     &vec![vec![1.0, 2.0], vec![1.0, 3.0], vec![3.0, 3.0]],
+///     &vec![vec![2.0, 4.0], vec![4.0, 4.0]],
+///     DistMetric::Euclidean
+/// ).unwrap();
+/// ```
 pub fn dtw<DMC>(arr1: DMC, arr2: DMC, metric : DistMetric) -> Result<f64, String>
 where
     DMC: DistMatCalc
