@@ -43,7 +43,7 @@ PD: PairDiff
 }
 
 
-/**  PairDiff trait provides pairwise distance for various primitive types */
+/// PairDiff trait provides pairwise distance for various primitive types
 pub trait PairDiff {
     fn euclidean(&self, other: &Self) -> Result<f64, String>;
 
